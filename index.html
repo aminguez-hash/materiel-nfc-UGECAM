@@ -1,52 +1,136 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Fiche équipement</title>
-</head>
-<body>
 
-<h1>Fiche équipement</h1>
-
-<div id="result">Chargement...</div>
-
-<script>
-const params = new URLSearchParams(window.location.search);
-const id = params.get("id");
-
-fetch("data.json")
-  .then(response => response.json())
-  .then(data => {
-
-    const equipement = data.find(e => e.ID === id);
-
-    if (equipement) {
-
-      document.getElementById("result").innerHTML = `
-        <p><strong>N° série :</strong> ${equipement["N° serie"] ?? ""}</p>
-
-        <p><strong>Inventaire :</strong> ${equipement["N° inventaire"] ?? ""}</p>
-
-        <p><strong>Maintenance :</strong> ${equipement.Maintenance ?? ""}</p>
-
-        <p><strong>Réparation :</strong> ${equipement["Réparation"] ?? ""}</p>
-
-        <p><strong>Année :</strong> ${equipement.Annee ?? ""}</p>
-
-        <p><strong>Lieu :</strong> ${equipement.Lieu ?? ""}</p>
-
-        <p><strong>Type :</strong> ${equipement.Types ?? ""}</p>
-      `;
-
-    } else {
-
-      document.getElementById("result").innerHTML =
-        "Équipement non trouvé";
-
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      background-color: #f5f5f5;
     }
 
-  });
-</script>
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      max-width: 500px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      color: #003366;
+    }
+
+    p {
+      font-size: 18px;
+      margin: 10px 0;
+    }
+
+    strong {
+      color: #222;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card">
+    <div id="result">
+      Chargement...
+    </div>
+  </div>
+
+  <script>
+
+    // Récupération de l'ID dans l'URL
+    const id = new URLSearchParams(window.location.search)
+      .get("id")
+      ?.trim();
+
+    // Chargement du fichier JSON
+    fetch("data.json")
+      .then(response => response.json())
+
+      .then(data => {
+
+        console.log("ID URL :", id);
+        console.log("DATA JSON :", data);
+
+        // Recherche de l'équipement
+        const equipement = data.find(e =>
+          e.ID?.trim().toUpperCase() === id?.toUpperCase()
+        );
+
+        console.log("EQUIPEMENT TROUVÉ :", equipement);
+
+        // Si aucun équipement trouvé
+        if (!equipement) {
+
+          document.getElementById("result").innerHTML = `
+            <h1>Erreur</h1>
+            <p>Équipement introuvable</p>
+          `;
+
+          return;
+        }
+
+        // Affichage des données
+        document.getElementById("result").innerHTML = `
+
+          <h1>Fiche équipement</h1>
+
+          <p>
+            <strong>N° série :</strong>
+            ${equipement["N° serie"] ?? ""}
+          </p>
+
+          <p>
+            <strong>Inventaire :</strong>
+            ${equipement["N° inventaire"] ?? ""}
+          </p>
+
+          <p>
+            <strong>Maintenance :</strong>
+            ${equipement["Maintenance"] ?? ""}
+          </p>
+
+          <p>
+            <strong>Réparation :</strong>
+            ${equipement["Réparation"] ?? ""}
+          </p>
+
+          <p>
+            <strong>Année :</strong>
+            ${equipement["Annee"] ?? ""}
+          </p>
+
+          <p>
+            <strong>Lieu :</strong>
+            ${equipement["Lieu"] ?? ""}
+          </p>
+
+          <p>
+            <strong>Type :</strong>
+            ${equipement["Types"] ?? ""}
+          </p>
+
+        `;
+      })
+
+      .catch(error => {
+
+        console.error("Erreur JSON :", error);
+
+        document.getElementById("result").innerHTML = `
+          <h1>Erreur</h1>
+          <p>Impossible de charger les données.</p>
+        `;
+      });
+
+  </script>
 
 </body>
 </html>
