@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Fiche équipement</title>
+</head>
+<body>
+
+<h1>Fiche équipement</h1>
+
+<div id="result">Chargement...</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+
+fetch("data.json")
+  .then(response => response.json())
+  .then(data => {
+    const equipement = data.find(e => e.ID === id);
+
+    if (equipement) {
+      document.getElementById("result").innerHTML = `
+        <p><strong>N° série :</strong> ${equipement.Serie}</p>
+        <p><strong>Inventaire :</strong> ${equipement.Inventaire}</p>
+        <p><strong>Année :</strong> ${equipement.Annee}</p>
+        <p><strong>Lieu :</strong> ${equipement.Lieu}</p>
+        <p><strong>Maintenance :</strong> ${equipement.Maintenance}</p>
+      `;
+    } else {
+      document.getElementById("result").innerHTML = "Équipement non trouvé";
+    }
+  });
+</script>
+
+</body>
+</html>
